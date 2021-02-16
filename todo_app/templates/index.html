@@ -8,11 +8,41 @@
   </div>
 
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 bs-example">
       <h2>Items</h2>
-      <ul class="list-group mb-4">
+      <ul class="list-group mb-4 list-group" >
+        <form method="post" action="{{ url_for('edit_item') }}">
+        {% for item in items %}
+        <li> 
+          <button type="submit" name="deletebutton" value="{{item.id}}">
+            Delete
+          </button> 
+          {% if item.status == "Not Started" %}
+          <button type="submit" name="Complete" value="{{item.id}}">
+            Complete
+          </button> 
+          {% else %}
+          <button type="submit" name="Reset" value="{{item.id}}">
+            Reset
+          </button> 
+          {% endif %}
+          {{item.id}} - {{item.status}} - {{item.title}}  
+        </li>
+        {% endfor %}
         <!-- List the todo items here -->
+      </form>
       </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h2>Add Item</h2>
+
+        <form method="post" action="{{ url_for('add_item') }}">
+            <input type="text" name="data" value=""/>
+            <button type="submit">Submit</button>
+      </form>
+
     </div>
   </div>
 {% endblock %}
