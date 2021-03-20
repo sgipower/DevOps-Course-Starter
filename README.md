@@ -1,4 +1,4 @@
-# DevOps Apprenticeship: Project Exercise
+# DevOps Apprenticeship: Project Exercise v2
 
 ## System Requirements
 
