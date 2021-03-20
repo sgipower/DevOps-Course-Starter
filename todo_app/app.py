@@ -1,6 +1,7 @@
 from todo_app.data import session_items
 from flask import Flask, render_template,redirect,url_for
 from flask.globals import request
+
 from todo_app.flask_config import Config
 
 app = Flask(__name__)
@@ -21,13 +22,17 @@ def delete_item():
 @app.route('/reset', methods=["POST"])
 def reset_item():
     val = request.form.get("Reset")
-    session_items.change_status_item(val,False)
+    item = session_items.get_item(int(val))
+    item['status'] = "Not Started"
+    session_items.save_item(item)
     return redirect(url_for('index_get'))
 
 @app.route('/complete', methods=["POST"])
 def complete_item():
     val = request.form.get("Complete")
-    session_items.change_status_item(val,True)
+    item = session_items.get_item(int(val))
+    item['status'] = "Completed"
+    session_items.save_item(item)
     return redirect(url_for('index_get'))
 
 
