@@ -13,7 +13,8 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
-    return session.get('items', _DEFAULT_ITEMS)
+    items = session.get('items', _DEFAULT_ITEMS)
+    return sorted(items, key=lambda k: k['status'])
 
 
 def get_item(id):
@@ -28,7 +29,13 @@ def get_item(id):
     """
     items = get_items()
     return next((item for item in items if item['id'] == int(id)), None)
-
+def delete_item(id):
+    items = get_items()
+    for i in range(len(items)): 
+        if items[i]['id'] == int(id): 
+            del items[i] 
+            break
+    session['items'] = items
 
 def add_item(title):
     """
