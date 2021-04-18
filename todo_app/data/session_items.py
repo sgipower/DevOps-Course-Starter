@@ -1,10 +1,34 @@
 from flask import session
+import json,requests,uuid,os
+from todo_app.data.item import Item
+from todo_app.data.itemstatus import ItemStatus
 
-_DEFAULT_ITEMS = [
-    { 'id': 1, 'status': 'Not Started', 'title': 'List saved todo items' },
-    { 'id': 2, 'status': 'Not Started', 'title': 'Allow new items to be added' }
-]
+def init_board():
+    boardName = os.environ.get('TRELLO_BOARD')
+    #CHECK BOARD EXISTS
+    r = requests.get('https://api.trello.com/1/boards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'id ':boardName})
+    if r.status_code == 200:
+        print("Board found on Trello.")
+        session['boardId'] = boardName
+        return
 
+    r = requests.post('https://api.trello.com/1/boards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':boardName,'defaultLists':'false'})
+    if r.status_code != 200:
+        print("Error creating a brand new board board. Error:" + r.reason)
+        return
+    else:
+        boardId = r.json()['id']
+        session['boardId'] = boardId
+    for listnameItem in ItemStatus:
+        listname = listnameItem.name
+        print("creating listings:" + listname)
+        r = requests.post('https://api.trello.com/1/boards/' + boardId + '/lists', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':listname})
+        if r.status_code != 200:
+            print("Error creating list: " + listname +". Error:" + r.reason)
+            return
+        else:
+            listid = r.json()['id']
+            session[listname] = listid
 
 def get_items():
     """
@@ -13,29 +37,36 @@ def get_items():
     Returns:
         list: The list of saved items.
     """
-    items = session.get('items', _DEFAULT_ITEMS)
-    return sorted(items, key=lambda k: k['status'])
+    items = []
+    boardId = session.get('boardId', "")
+    if boardId == "":
+        init_board()       
+    boardId = session.get('boardId', "")
+    #get list of items.
+    r = requests.get('https://api.trello.com/1/boards/' + boardId + '/cards', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
+    if r.status_code != 200:
+            print("Error getting cards. Error:" + r.reason)
+            return
+    else:
+        
+        for card in r.json():
+            idList = card['idList']
+            if idList == session[ItemStatus.TODO.name]:
+                status = ItemStatus.TODO
+            elif idList == session[ItemStatus.FINISHED.name]:
+                status = ItemStatus.FINISHED
+            else:
+                status = -1
+
+            items.append(Item(int(card['idShort']),status,card['name'],card['id']))
+    return sorted(items, key=lambda k: k.status.value)
 
 
-def get_item(id):
-    """
-    Fetches the saved item with the specified ID.
-
-    Args:
-        id: The ID of the item.
-
-    Returns:
-        item: The saved item, or None if no items match the specified ID.
-    """
-    items = get_items()
-    return next((item for item in items if item['id'] == int(id)), None)
 def delete_item(id):
-    items = get_items()
-    for i in range(len(items)): 
-        if items[i]['id'] == int(id): 
-            del items[i] 
-            break
-    session['items'] = items
+    r = requests.delete('https://api.trello.com/1/cards/' + id, data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
+    if r.status_code != 200:
+        print("Error deleting card. Error:" + r.reason)
+    return
 
 def add_item(title):
     """
@@ -45,32 +76,20 @@ def add_item(title):
         title: The title of the item.
 
     Returns:
-        item: The saved item.
+        item: The saved item.  
     """
-    items = get_items()
-
-    # Determine the ID for the item based on that of the previously added item
-    id = items[-1]['id'] + 1 if items else 0
-
-    item = { 'id': id, 'title': title, 'status': 'Not Started' }
-
-    # Add the item to the list
-    items.append(item)
-    session['items'] = items
-
-    return item
-
-
-def save_item(item):
+    r = requests.post('https://api.trello.com/1/cards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':title , 'idList':session[ItemStatus.TODO.name] })
+    if r.status_code != 200:
+        print("Error creating card. Error:" + r.reason)
+    return
+def change_status_item(id,newStatus):
     """
     Updates an existing item in the session. If no existing item matches the ID of the specified item, nothing is saved.
 
     Args:
         item: The item to save.
     """
-    existing_items = get_items()
-    updated_items = [item if item['id'] == existing_item['id'] else existing_item for existing_item in existing_items]
-
-    session['items'] = updated_items
-
-    return item
+    r = requests.put('https://api.trello.com/1/cards/'+ id, data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'idList':session[newStatus.name] })
+    if r.status_code != 200:
+        print("Error changing card. Error:" + r.reason)
+    return

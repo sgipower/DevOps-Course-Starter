@@ -50,3 +50,15 @@ You should see output similar to the following:
  * Debugger PIN: 226-556-590
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
+
+## Configuring the Trello API
+
+Before you run the application for the first time, you will need to register on Trello and obtain a key and token.
+You will add the key and token to your newly created .env file :
+```bash
+SECRET_KEY=secret-key
+TRELLO_KEY=*************
+TRELLO_TOKEN=**********
+TRELLO_BOARD=47ebaa0e00564b548464a9d5fb7c796f
+```
+
