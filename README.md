@@ -62,7 +62,7 @@ TRELLO_TOKEN=**********
 TRELLO_BOARD=47ebaa0e00564b548464a9d5fb7c796f
 ```
 
-##testing this app
+## testing this app
 
 Before you test this app you need to get your environment ready. To do that install pytest:
 ```bash
