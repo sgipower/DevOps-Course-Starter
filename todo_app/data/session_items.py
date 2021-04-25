@@ -4,31 +4,49 @@ from todo_app.data.item import Item
 from todo_app.data.itemstatus import ItemStatus
 
 def init_board():
-    boardName = os.environ.get('TRELLO_BOARD')
+    boardID = os.environ.get('TRELLO_BOARD')
     #CHECK BOARD EXISTS
-    r = requests.get('https://api.trello.com/1/boards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'id ':boardName})
+    r = requests.get('https://api.trello.com/1/boards/' + boardID , data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
     if r.status_code == 200:
         print("Board found on Trello.")
-        session['boardId'] = boardName
-        return
-
-    r = requests.post('https://api.trello.com/1/boards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':boardName,'defaultLists':'false'})
-    if r.status_code != 200:
-        print("Error creating a brand new board board. Error:" + r.reason)
+        session['boardId'] = boardID
+        init_lists()
         return
     else:
-        boardId = r.json()['id']
-        session['boardId'] = boardId
-    for listnameItem in ItemStatus:
-        listname = listnameItem.name
-        print("creating listings:" + listname)
-        r = requests.post('https://api.trello.com/1/boards/' + boardId + '/lists', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':listname})
-        if r.status_code != 200:
-            print("Error creating list: " + listname +". Error:" + r.reason)
-            return
-        else:
-            listid = r.json()['id']
-            session[listname] = listid
+        print("Error finding the board.Going to create one. Error:" + r.reason)
+
+    r = requests.post('https://api.trello.com/1/boards/', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':'DevOps-Course-Starter','defaultLists':'false'})
+    if r.status_code != 200:
+        print("Error creating a brand new board board.Probably you have reached the maximum. Error:" + r.reason)
+        return
+    else:
+        session['boardId'] = r.json()['id']
+        print("The board configured on .env is not valid or does not exist. Please to persist it, add the new board to your .env file:\r\nTRELLO_BOARD="+ r.json()['id'])
+        init_lists()
+    
+def init_lists():
+    boardID = session.get('boardId', "")
+      #get lists on the board
+    r = requests.get('https://api.trello.com/1/boards/' + boardID  + '/lists', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
+    if r.status_code == 200:
+        print("Retrieved lists:" + r.text )
+        for listnameItem in ItemStatus:
+            listname = listnameItem.name
+            res = next((sub for sub in r.json() if sub['name'] == listname), None)
+            if res != None:
+                print('listing found:' + listname + " : "+ res['id'])
+                session[listname] = res['id']
+            else:
+                print("creating listings:" + listname)
+                rr = requests.post('https://api.trello.com/1/boards/' + boardID + '/lists', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'name':listname})
+                if rr.status_code != 200:
+                    print("Error creating list: " + listname +". Error:" + rr.reason)
+                    return
+                else:
+                    listid = rr.json()['id']
+                    session[listname] = listid
+    else:
+        raise Exception("Cannot get a list of lists from the boardid" + boardID)
 
 def get_items():
     """
@@ -55,6 +73,8 @@ def get_items():
                 status = ItemStatus.TODO
             elif idList == session[ItemStatus.FINISHED.name]:
                 status = ItemStatus.FINISHED
+            elif idList == session[ItemStatus.DOING.name]:
+                status = ItemStatus.DOING
             else:
                 status = -1
 
@@ -89,7 +109,9 @@ def change_status_item(id,newStatus):
     Args:
         item: The item to save.
     """
+    print("status:" + session[newStatus.name])
     r = requests.put('https://api.trello.com/1/cards/'+ id, data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN'),'idList':session[newStatus.name] })
+    print(r.url)
     if r.status_code != 200:
         print("Error changing card. Error:" + r.reason)
     return

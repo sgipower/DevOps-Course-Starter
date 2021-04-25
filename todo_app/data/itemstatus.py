@@ -1,4 +1,5 @@
 from enum import Enum
 class ItemStatus(Enum):
     TODO = 1
-    FINISHED = 2
+    DOING = 2
+    FINISHED = 3

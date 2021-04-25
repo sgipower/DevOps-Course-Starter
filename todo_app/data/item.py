@@ -8,6 +8,10 @@ class Item:
         self.cardid= cardid
     def unstarted(self):
         return self.status == ItemStatus.TODO
+    def started(self):
+        return self.status == ItemStatus.DOING
+    def finished(self):
+        return self.status == ItemStatus.FINISHED                
     def description(self):
         return ItemStatus(self.status).name  
     def __str__(self):
