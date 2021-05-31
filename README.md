@@ -77,3 +77,10 @@ And run the tests:
 ```bash
 poetry run pytest
 ```
+
+## Vagrant
+You can run this system in vagrant, for that install vagrant, virtual box and run:
+And run the tests:
+```bash
+vagrant  up --provision
+```
