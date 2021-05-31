@@ -76,7 +76,7 @@ def get_items():
             elif idList == session[ItemStatus.DOING.name]:
                 status = ItemStatus.DOING
             else:
-                status = -1
+                status = ItemStatus.TODO
 
             items.append(Item(int(card['idShort']),status,card['name'],card['id']))
     return sorted(items, key=lambda k: k.status.value)

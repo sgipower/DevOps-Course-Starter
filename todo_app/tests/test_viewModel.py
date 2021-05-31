@@ -9,9 +9,9 @@ def test_CheckTodoList():
 
     view = ViewModel(items)
 
-    assert  sum(1 for _ in view.todo_items) == 1 
-    assert  sum(1 for _ in view.finished_items) == 0
-    assert  sum(1 for _ in view.doing_items) == 0 
+    assert  len(view.todo_items) == 1 
+    assert  len(view.finished_items) == 0
+    assert  len(view.doing_items) == 0 
     assert view.has_todo_items == True
     assert view.has_doing_items == False
     assert view.has_finished_items == False
@@ -22,9 +22,9 @@ def test_CheckDoingList():
 
     view = ViewModel(items)
 
-    assert  sum(1 for _ in view.todo_items) == 0 
-    assert  sum(1 for _ in view.finished_items) == 0
-    assert  sum(1 for _ in view.doing_items) == 1
+    assert  len(view.todo_items) == 0 
+    assert  len(view.finished_items) == 0
+    assert  len(view.doing_items) == 1
     assert view.has_todo_items == False
     assert view.has_doing_items == True
     assert view.has_finished_items == False
@@ -35,9 +35,9 @@ def test_CheckDoneList():
 
     view = ViewModel(items)
 
-    assert  sum(1 for _ in view.todo_items) == 0
-    assert  sum(1 for _ in view.finished_items) == 1
-    assert  sum(1 for _ in view.doing_items) == 0 
+    assert  len(view.todo_items) == 0
+    assert  len(view.finished_items) == 1
+    assert  len(view.doing_items) == 0 
     assert view.has_todo_items == False
     assert view.has_doing_items == False
     assert view.has_finished_items == True
@@ -46,9 +46,9 @@ def test_NoItems():
     items = []
     view = ViewModel(items)
 
-    assert  sum(1 for _ in view.todo_items) == 0
-    assert  sum(1 for _ in view.finished_items) == 0
-    assert  sum(1 for _ in view.doing_items) == 0 
+    assert  len(view.todo_items) == 0
+    assert  len(view.finished_items) == 0
+    assert  len(view.doing_items) == 0 
     assert view.has_todo_items == False
     assert view.has_doing_items == False
     assert view.has_finished_items == False
