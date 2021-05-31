@@ -6,34 +6,81 @@
     <h1 class="display-4">To-Do App</h1>
     <p class="lead">Just another to-do app.</p>
   </div>
-
+  {% if view_model.has_todo_items %}
   <div class="row">
     <div class="col-md-12 bs-example">
-      <h2>Items</h2>
+      <h2>To do Items</h2>
       <ul class="list-group mb-4 list-group" >
         <form method="post">
-        {% for item in items %}
-        <li> delete_item
-          <button type="submit" name="deletebutton" value="{{item.id}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+        {% for item in view_model.todo_items%}
+        <li>
+          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
             Delete
           </button> 
-          {% if item.status == "Not Started" %}
-          <button type="submit" name="Complete" value="{{item.id}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
-            Complete
+          <button type="submit" name="Doing" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('doing_item')}}';">
+            To Doing
           </button> 
-          {% else %}
-          <button type="submit" name="Reset" value="{{item.id}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
-            Reset
-          </button> 
-          {% endif %}
-          {{item.id}} - {{item.status}} - {{item.title}}  
+          {{item.id}} - {{item.status.name}} - {{item.title}}  
         </li>
         {% endfor %}
-        <!-- List the todo items here -->
       </form>
       </ul>
     </div>
   </div>
+  {% endif %}
+  {% if view_model.has_doing_items %}
+  <div class="row">
+    <div class="col-md-12 bs-example">
+      <h2>Doing Items</h2>
+      <ul class="list-group mb-4 list-group" >
+        <form method="post">
+        {% for item in view_model.doing_items%}
+        <li>
+          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+            Delete
+          </button> 
+          <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
+            Complete
+          </button> 
+          <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
+            Reset
+          </button> 
+          {{item.id}} - {{item.status.name}} - {{item.title}}  
+        </li>
+        {% endfor %}
+      </form>
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+  {% if view_model.has_finished_items %}
+  <div class="row">
+    <div class="col-md-12 bs-example">
+      <h2>Finished Items</h2>
+      <ul class="list-group mb-4 list-group" >
+        <form method="post">
+        {% for item in view_model.finished_items%}
+        <li>
+          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+            Delete
+          </button> 
+          {% if item.unstarted() %}
+          <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
+            Complete
+          </button> 
+          {% else %}
+          <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
+            Reset
+          </button> 
+          {% endif %}
+          {{item.id}} - {{item.status.name}} - {{item.title}}  
+        </li>
+        {% endfor %}
+      </form>
+      </ul>
+    </div>
+  </div>
+  {% endif %}
   <div class="row">
     <div class="col-md-12">
       <h2>Add Item</h2>

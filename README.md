@@ -1,4 +1,4 @@
-# DevOps Apprenticeship: Project Exercise
+# DevOps Apprenticeship: Project Exercise v3
 
 ## System Requirements
 
@@ -62,3 +62,18 @@ TRELLO_TOKEN=**********
 TRELLO_BOARD=47ebaa0e00564b548464a9d5fb7c796f
 ```
 
+## testing this app
+
+Before you test this app you need to get your environment ready. To do that install pytest:
+```bash
+poetry add pytest
+```
+
+to run the tests, make sure you are in the todo_app folder:
+```bash
+cd .\todo_app\
+```
+And run the tests:
+```bash
+poetry run pytest
+```

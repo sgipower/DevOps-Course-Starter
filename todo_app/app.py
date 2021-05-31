@@ -3,6 +3,7 @@ from flask import Flask, render_template,redirect,url_for
 from flask.globals import request
 from todo_app.flask_config import Config
 from todo_app.data.itemstatus import ItemStatus
+from todo_app.model.viewModel import ViewModel
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -11,7 +12,8 @@ app.config.from_object(Config)
 @app.route('/', methods=["GET"])
 def index_get():
     items =  session_items.get_items()
-    return render_template('index.html',items=items)
+    item_view_model = ViewModel(items)
+    return render_template('index.html',view_model=item_view_model)
 
 @app.route('/delete', methods=["POST"])
 def delete_item():
@@ -31,6 +33,11 @@ def complete_item():
     session_items.change_status_item(val,ItemStatus.FINISHED)
     return redirect(url_for('index_get'))
 
+@app.route('/doing', methods=["POST"])
+def doing_item():
+    val = request.form.get("Doing")
+    session_items.change_status_item(val,ItemStatus.DOING)
+    return redirect(url_for('index_get'))
 
 @app.route('/additem', methods=["POST"])
 def add_item():
