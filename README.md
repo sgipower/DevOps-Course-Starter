@@ -84,3 +84,20 @@ And run the tests:
 ```bash
 vagrant  up --provision
 ```
+
+
+## docker
+For docker usage please use the following comands.
+For developement:(change path with your own path)
+```bash
+docker build --target dev --tag todo-app:dev .   
+docker run --env-file .env -p5000:5000 --mount type=bind,source=D:\Users\Jordi\Documents\corndel\ex5\exercise\DevOps-Course-Starter\todo_app,target=/app/todo_app todo-app:dev 
+```
+Navigate to:http://localhost:5000/
+
+For production (change path with your own path)
+```bash
+docker build --target prod --tag todo-app:prod .
+docker run --env-file .\.env -p8000:8000 --mount type=bind,source=D:\Users\Jordi\Documents\corndel\ex5\exercise\DevOps-Course-Starter\todo_app,target=/app/todo_app -t -i  todo-app:prod
+```
+Navigate to :http://localhost:8000/
