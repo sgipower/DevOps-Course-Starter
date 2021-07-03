@@ -5,9 +5,13 @@ from todo_app.flask_config import Config
 from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
 
-app = Flask(__name__)
-app.config.from_object(Config)
 
+
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+    return app
 
 @app.route('/', methods=["GET"])
 def index_get():
@@ -46,4 +50,4 @@ def add_item():
     return redirect(url_for('index_get'))
 
 if __name__ == '__main__':
-    app.run()
+    create_app().run()
