@@ -29,10 +29,24 @@ def test_index_page(mock_get_requests, client):
     response_data = response.data.decode()
     assert 'T1' in response_data
 
+trello_lists = [
+    {
+        "id":"60eacfe2a3dd2132b75a4b2d",
+        "name":"FINISHED",
+        "closed":False,
+        "pos":4096,
+        "softLimit":None,
+        "idBoard":"60eacfe12a6b3c534957c408",
+        "subscribed":False
+    }
+] 
 
 def mock_get_lists(url, params):
     if url == 'https://api.trello.com/1/boards/board_id/lists':
-        response = Mock()
-        response.json.return_value = {'value': 1}
+        response = Mock(ok=True)
+        response.json.return_value = trello_lists
         return response
+
     return None
+
+
