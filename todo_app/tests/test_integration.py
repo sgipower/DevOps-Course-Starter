@@ -1,3 +1,4 @@
+from logging import log
 import todo_app
 from todo_app.data import itemstatus
 from todo_app.data.itemstatus import ItemStatus
@@ -16,6 +17,8 @@ def client():
     load_dotenv(file_path, override=True)
  # Create the new app.
     test_app = todo_app.app.create_app()
+    test_app.secret_key = 'super secret key'
+    test_app.config['SESSION_TYPE'] = 'filesystem'
  # Use the app to create a test_client that can be used in our
 
     with test_app.test_client() as client:
@@ -27,26 +30,54 @@ def test_index_page(mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     response = client.get('/')
     response_data = response.data.decode()
-    assert 'T1' in response_data
+    assert 'FINISHED' in response_data
 
 trello_lists = [
     {
+        "id":"60eacfe2a3dd2132b75a4b2a",
+        "name":"TODO"
+    },
+      {
+        "id":"60eacfe2a3dd2132b75a4b2b",
+        "name":"DOING"
+    },
+      {
+        "id":"60eacfe2a3dd2132b75a4b2c",
+        "name":"FINISHED"
+    }
+] 
+trello_cards = [
+    {
+        "idList":"60eacfe2a3dd2132b75a4b2d",
         "id":"60eacfe2a3dd2132b75a4b2d",
+        "idShort":"1",
         "name":"FINISHED",
         "closed":False,
         "pos":4096,
         "softLimit":None,
-        "idBoard":"60eacfe12a6b3c534957c408",
+        "idBoard":"60eacfe2a3dd2132b75a4b2c",
         "subscribed":False
     }
 ] 
 
-def mock_get_lists(url, params):
+
+def mock_get_lists(url, data):
+    print("call to me:" + url)
     if url == 'https://api.trello.com/1/boards/board_id/lists':
         response = Mock(ok=True)
         response.json.return_value = trello_lists
+        response.status_code=200
         return response
-
+    if url == 'https://api.trello.com/1/boards/board_id':
+        response = Mock(ok=True)
+        response.json.return_value = trello_lists
+        response.status_code=200
+        return response
+    if url == 'https://api.trello.com/1/boards/board_id/cards':
+        response = Mock(ok=True)
+        response.json.return_value = trello_cards
+        response.status_code=200
+        return response
     return None
 
 
