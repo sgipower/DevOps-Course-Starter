@@ -17,10 +17,8 @@ def client():
     load_dotenv(file_path, override=True)
  # Create the new app.
     test_app = todo_app.app.create_app()
-    test_app.secret_key = 'super secret key'
-    test_app.config['SESSION_TYPE'] = 'filesystem'
- # Use the app to create a test_client that can be used in our
 
+ # Use the app to create a test_client that can be used in our
     with test_app.test_client() as client:
         yield client
 
@@ -30,7 +28,7 @@ def test_index_page(mock_get_requests, client):
     mock_get_requests.side_effect = mock_get_lists
     response = client.get('/')
     response_data = response.data.decode()
-    assert 'FINISHED' in response_data
+    assert 'FINISHED CARD' in response_data
 
 trello_lists = [
     {
@@ -51,12 +49,18 @@ trello_cards = [
         "idList":"60eacfe2a3dd2132b75a4b2d",
         "id":"60eacfe2a3dd2132b75a4b2d",
         "idShort":"1",
-        "name":"FINISHED",
+        "name":"FINISHED CARD",
         "closed":False,
         "pos":4096,
         "softLimit":None,
         "idBoard":"60eacfe2a3dd2132b75a4b2c",
         "subscribed":False
+    }
+] 
+trello_boards = [
+    {
+        "id":"60eacfe2a3dd2132b75a4b2a",
+        "name":"board_id"
     }
 ] 
 
@@ -70,7 +74,7 @@ def mock_get_lists(url, data):
         return response
     if url == 'https://api.trello.com/1/boards/board_id':
         response = Mock(ok=True)
-        response.json.return_value = trello_lists
+        response.json.return_value = trello_boards
         response.status_code=200
         return response
     if url == 'https://api.trello.com/1/boards/board_id/cards':

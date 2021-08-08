@@ -46,8 +46,6 @@ def app_with_temp_board():
     # construct the new application
     application = todo_app.app.create_app()
     application.boardId = board_id
-    application.secret_key = 'secret-key'
-    application.config['SESSION_TYPE'] = 'filesystem'
     # start the app in its own thread.
     thread = Thread(target=lambda: application.run(use_reloader=False))
     thread.daemon = True
