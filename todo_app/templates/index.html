@@ -8,19 +8,21 @@
   </div>
   {% if view_model.has_todo_items %}
   <div class="row">
-    <div class="col-md-12 bs-example">
+    <div class="col-md-12 bs-example" id="todo-tasks">
       <h2>To do Items</h2>
       <ul class="list-group mb-4 list-group" >
         <form method="post">
         {% for item in view_model.todo_items%}
         <li>
-          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
-            Delete
-          </button> 
-          <button type="submit" name="Doing" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('doing_item')}}';">
-            To Doing
-          </button> 
-          {{item.id}} - {{item.status.name}} - {{item.title}}  
+          <div  id="todo-task">
+            <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+              Delete
+            </button> 
+            <button type="submit" name="Doing" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('doing_item')}}';">
+              To Doing
+            </button> 
+            {{item.id}} - {{item.status.name}} - {{item.title}}  
+          </div>
         </li>
         {% endfor %}
       </form>
@@ -86,7 +88,7 @@
       <h2>Add Item</h2>
 
         <form method="post" action="{{ url_for('add_item') }}">
-            <input type="text" name="data" value=""/>
+            <input type="text" name="data" value="" id="new-task-input"/>
             <button type="submit">Submit</button>
       </form>
 
