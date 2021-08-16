@@ -58,7 +58,7 @@ def app_with_temp_board():
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Firefox(executable_path=r'D:\Users\Jordi\Documents\corndel\ex3\DevOps-Course-Starterv2\geckodriver.exe')
+    driver = webdriver.Firefox()
     yield driver
     # this will close the windows after the test is done.
     driver.quit()
