@@ -4,7 +4,6 @@ from flask.globals import request
 from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
@@ -48,3 +47,4 @@ def create_app():
 
 if __name__ == '__main__':
     create_app().run()
+
