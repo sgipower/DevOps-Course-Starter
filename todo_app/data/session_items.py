@@ -29,7 +29,7 @@ def init_lists():
       #get lists on the board
     r = requests.get('https://api.trello.com/1/boards/' + boardID  + '/lists', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
     if r.status_code == 200:
-        print("Retrieved lists:" + r.text )
+        #print("Retrieved lists:" + r.text )
         for listnameItem in ItemStatus:
             listname = listnameItem.name
             res = next((sub for sub in r.json() if sub['name'] == listname), None)
@@ -58,7 +58,7 @@ def get_items():
     items = []
     boardId = session.get('boardId', "")
     if boardId == "":
-        init_board()       
+       init_board()       
     boardId = session.get('boardId', "")
     #get list of items.
     r = requests.get('https://api.trello.com/1/boards/' + boardId + '/cards', data = {'key':os.environ.get('TRELLO_KEY'),'token':os.environ.get('TRELLO_TOKEN')})
