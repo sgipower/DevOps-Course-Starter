@@ -58,10 +58,12 @@ def app_with_temp_board():
 
 @pytest.fixture
 def driver():
-    driver = webdriver.Firefox()
-    yield driver
-    # this will close the windows after the test is done.
-    driver.quit()
+    opts = webdriver.ChromeOptions()
+    opts.add_argument('--headless')
+    opts.add_argument('--no-sandbox')
+    opts.add_argument('--disable-dev-shm-usage')
+    with webdriver.Chrome('./chromedriver', options=opts) as driver:
+        yield driver
 
 def test_task_journey(driver, app_with_temp_board):
     driver.get('http://localhost:5000/')
