@@ -17,6 +17,7 @@ after-script:
   - docker tag  $DOCKER_USERNAME/todo-app:latest registry.heroku.com/todo-app-m8/web
   - docker push registry.heroku.com/todo-app-m8/web
 deploy:
-  - provider: script
-  - script: 
-     heroku container:release web --app todo-app-m8
+    provider: script
+    on: module_8
+    script: 
+            heroku container:release web --app todo-app-m8
