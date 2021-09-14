@@ -11,3 +11,4 @@ script:
  after-script:
   - docker build -t production --tag $DOCKER_USERNAME/todo-app:latest .
   - docker push $DOCKER_USERNAME/todo-app:latest
+  
