@@ -32,7 +32,7 @@ ENTRYPOINT ["/bin/bash", "-c", "poetry run flask run --host 0.0.0.0"]
 FROM base as prod
 EXPOSE 8000
 RUN pip install gunicorn
-ENTRYPOINT ["/bin/bash", "-c", "gunicorn  --forwarded-allow-ips='*' --chdir '/app/todo_app/' -b 0.0.0.0 'app:create_app()'"]
+ENTRYPOINT ["/bin/bash", "-c", "gunicorn  --forwarded-allow-ips='*' --chdir '/app/todo_app/' -b 0.0.0.0:$PORT 'app:create_app()'"]
 
 FROM base as test
 RUN apt-get update &&\
