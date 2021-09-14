@@ -36,7 +36,8 @@ EXPOSE $PORT
 #ENTRYPOINT ["/bin/bash", "-c", "gunicorn --chdir 'todo_app/' -b 0.0.0.0:$PORT 'app:create_app()'"]
 #ENTRYPOINT ["gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
 WORKDIR /code/todo_app
-ENTRYPOINT ["/bin/bash", "-c","gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
+#ENTRYPOINT ["/bin/bash", "-c","gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
+ENTRYPOINT ["gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
 
 
 FROM base as test
