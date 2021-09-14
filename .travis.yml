@@ -19,7 +19,7 @@ after_success:
 deploy:
     provider: script
     on:
-        branch: module_8
+        branch: main
     script: 
         docker push registry.heroku.com/todo-app-m8/web;
         heroku container:release web --app todo-app-m8;
