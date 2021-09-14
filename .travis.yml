@@ -8,7 +8,7 @@ script:
   - docker build -t test .
   - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' test
  
- after-script:
+after-script:
   - docker build -t production --tag $DOCKER_USERNAME/todo-app:latest .
   - docker push $DOCKER_USERNAME/todo-app:latest
   
