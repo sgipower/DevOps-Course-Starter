@@ -25,6 +25,7 @@ RUN poetry config virtualenvs.create false \
 # Creating folders, and files for a project:
 COPY . /code
 WORKDIR /code
+RUN chmod +x entrypoint.sh
 
 FROM base as dev
 EXPOSE 5000
@@ -33,11 +34,7 @@ ENTRYPOINT ["/bin/bash", "-c", "poetry run flask run --host 0.0.0.0"]
 FROM base as prod
 RUN pip install gunicorn
 EXPOSE $PORT
-#ENTRYPOINT ["/bin/bash", "-c", "gunicorn --chdir 'todo_app/' -b 0.0.0.0:$PORT 'app:create_app()'"]
-#ENTRYPOINT ["gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
-WORKDIR /code/todo_app
-#ENTRYPOINT ["/bin/bash", "-c","gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
-ENTRYPOINT ["gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
+ENTRYPOINT ["sh","./entrypoint.sh"]
 
 
 FROM base as test
