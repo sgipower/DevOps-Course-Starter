@@ -4,6 +4,9 @@ services:
   - docker
 before-install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh #installed heroku CLI
+  - docker login -u "$HEROKU_USERNAME" --password=$HEROKU_PASS registry.heroku.com #logged in
+  
 script:
   - docker build --target test -t test .
   - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' test
@@ -11,3 +14,9 @@ script:
 after-script:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
   - docker push $DOCKER_USERNAME/todo-app:latest
+  - docker tag  $DOCKER_USERNAME/todo-app:latest registry.heroku.com/todo-app-m8/web
+  - docker push registry.heroku.com/todo-app-m8/web
+deploy:
+  - provider: script
+  - script: 
+     heroku container:release web --app todo-app-m8
