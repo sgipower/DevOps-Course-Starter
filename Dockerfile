@@ -15,15 +15,16 @@ ENV YOUR_ENV=${YOUR_ENV} \
 RUN pip install "poetry==$POETRY_VERSION"
 
 # Copy only requirements to cache them in docker layer
-WORKDIR /app
-COPY poetry.lock pyproject.toml /app/
+
+COPY poetry.lock pyproject.toml .
 
 # Project initialization:
 RUN poetry config virtualenvs.create false \
   && poetry install $(test "$YOUR_ENV" == production && echo "--no-dev") --no-interaction --no-ansi
 
 # Creating folders, and files for a project:
-COPY . /app
+COPY . /code
+WORKDIR /code
 
 FROM base as dev
 EXPOSE 5000
@@ -32,8 +33,7 @@ ENTRYPOINT ["/bin/bash", "-c", "poetry run flask run --host 0.0.0.0"]
 FROM base as prod
 EXPOSE $PORT
 RUN pip install gunicorn
-WORKDIR /app/todo_app/
-ENTRYPOINT ["gunicorn -b 0.0.0.0:$PORT 'app:create_app()'"]
+ENTRYPOINT ["/bin/bash", "-c", "gunicorn  --forwarded-allow-ips='*' --chdir 'todo_app/' -b 0.0.0.0:$PORT 'app:create_app()'"]
 
 FROM base as test
 RUN apt-get update &&\
