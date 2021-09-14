@@ -10,4 +10,4 @@ script:
  
 after-script:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest -t registry.heroku.com/todo-app-m8/web .
-  - docker push $DOCKER_USERNAME/todo-app:latest --all-tags
+  - docker push $DOCKER_USERNAME/todo-app:latest
