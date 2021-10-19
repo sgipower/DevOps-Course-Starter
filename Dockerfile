@@ -15,8 +15,8 @@ ENV YOUR_ENV=${YOUR_ENV} \
 RUN pip install "poetry==$POETRY_VERSION"
 
 # Copy only requirements to cache them in docker layer
-WORKDIR /code
-COPY poetry.lock pyproject.toml /code/
+
+COPY  pyproject.toml .
 
 # Project initialization:
 RUN poetry config virtualenvs.create false \
@@ -24,15 +24,18 @@ RUN poetry config virtualenvs.create false \
 
 # Creating folders, and files for a project:
 COPY . /code
+WORKDIR /code
+RUN chmod +x entrypoint.sh
 
 FROM base as dev
 EXPOSE 5000
 ENTRYPOINT ["/bin/bash", "-c", "poetry run flask run --host 0.0.0.0"]
 
 FROM base as prod
-EXPOSE 8000
 RUN pip install gunicorn
-ENTRYPOINT ["/bin/bash", "-c", "gunicorn  --forwarded-allow-ips='*' --chdir '/app/todo_app/' -b 0.0.0.0 'app:create_app()'"]
+EXPOSE $PORT
+ENTRYPOINT ["sh","./entrypoint.sh"]
+
 
 FROM base as test
 RUN apt-get update &&\
