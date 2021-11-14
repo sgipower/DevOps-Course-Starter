@@ -9,7 +9,7 @@ before-install:
   
 script:
   - docker build --target test -t test .
-  - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' test
+  - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' -e MONGO_USERNAME -e MONGO_PASS  -e MONGO_HOST -e DEFAULT_DATABASE test
  
 after_success:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
