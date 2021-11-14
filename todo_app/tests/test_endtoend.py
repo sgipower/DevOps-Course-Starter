@@ -33,7 +33,6 @@ def app_with_temp_board():
     file_path = find_dotenv('.env.test')
     load_dotenv(file_path, override=True)
     db = get_board()
-    #os.environ['TRELLO_BOARD'] = "test_board"
     # construct the new application
     application = todo_app.app.create_app()
     #application.boardId = board_id

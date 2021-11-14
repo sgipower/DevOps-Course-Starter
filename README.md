@@ -106,3 +106,12 @@ Navigate to :http://localhost:8000/
 This project now contains .travis.yml file that will help run all the tests after each push. 
 For that you will need to add the keys in the build settings. For more info check : https://docs.travis-ci.com/user/environment-variables/#defining-variables-in-repository-settings
 
+
+## MongoDB
+This project is now fully integrated with MongoDB atlas. For it to work, please set the variables in  your .env 
+```bash
+MONGO_USERNAME=*******
+MONGO_PASS=******
+MONGO_HOST=YOURHOST.mongodb.net
+DEFAULT_DATABASE=db
+```

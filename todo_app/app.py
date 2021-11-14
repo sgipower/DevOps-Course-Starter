@@ -14,11 +14,12 @@ def get_DB():
 def del_DB(db):
     db.drop()
 
-def create_app():
+def create_app(db = None):
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
 
-    db = get_DB()
+    if db == None:
+        db = get_DB()
 
     @app.route('/', methods=["GET"])
     def index_get():
