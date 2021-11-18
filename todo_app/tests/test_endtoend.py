@@ -1,5 +1,5 @@
 from logging import log
-import todo_app
+import todo_app,pymongo,uuid
 from todo_app.data import itemstatus
 from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
@@ -16,36 +16,26 @@ import todo_app.app
 load_dotenv()
 
 
-def add_board():
-    response = requests.post(
-        url=f'https://api.trello.com/1/boards',
-        params={
-            'name': 'Selenium',
-            'key': os.environ['TRELLO_KEY'],
-            'token': os.environ['TRELLO_TOKEN']
-        }
-    )
-    return response.json()['id']
+def get_board():
+    client = pymongo.MongoClient(f"mongodb+srv://{os.getenv('MONGO_USERNAME')}:{os.getenv('MONGO_PASS')}@{os.getenv('MONGO_HOST')}/?w=majority")
+    db = client[os.getenv('DEFAULT_DATABASE')]
+    os.environ['TRELLO_BOARD'] = "test_board" + uuid.uuid1().hex
+    col = os.environ['TRELLO_BOARD']
+    return db[col]
+   
 
-
-def del_board(board_id):
-    requests.delete(
-        url=f'https://api.trello.com/1/boards/{board_id}',
-        params={
-            'key': os.environ['TRELLO_KEY'],
-            'token': os.environ['TRELLO_TOKEN']
-        }
-    )
+def del_board(db):
+    db.drop()
 
 @pytest.fixture(scope='module')
 def app_with_temp_board():
     # Create the new board & update the board id environment variable
-    board_id = add_board()
-    os.environ['TRELLO_BOARD'] = board_id
-
+    file_path = find_dotenv('.env.test')
+    load_dotenv(file_path, override=True)
+    db = get_board()
     # construct the new application
     application = todo_app.app.create_app()
-    application.boardId = board_id
+    #application.boardId = board_id
     # start the app in its own thread.
     thread = Thread(target=lambda: application.run(use_reloader=False))
     thread.daemon = True
@@ -54,7 +44,7 @@ def app_with_temp_board():
 
     # Tear Down
     thread.join(1)
-    del_board(board_id)
+    del_board(db)
 
 @pytest.fixture
 def driver():
@@ -63,6 +53,7 @@ def driver():
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
     with webdriver.Chrome('./chromedriver', options=opts) as driver:
+    #with webdriver.Chrome() as driver:
         yield driver
 
 def test_task_journey(driver, app_with_temp_board):

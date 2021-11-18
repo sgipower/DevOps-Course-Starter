@@ -117,6 +117,7 @@ env/
 .venv/
 
 ### Configuration files ###
+.env.test
 .env
 .vagrant
 /logs.txt
