@@ -32,6 +32,7 @@ def app_with_temp_board():
     # Create the new board & update the board id environment variable
     file_path = find_dotenv('.env.test')
     load_dotenv(file_path, override=True)
+    os.environ['LOGIN_DISABLED'] = 'True'
     db = get_board()
     # construct the new application
     application = todo_app.app.create_app()
