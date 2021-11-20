@@ -74,12 +74,11 @@ def create_app(db = None):
         if userinfo_response.json().get("login"):
             login = userinfo_response.json()["login"]
             unique_id = userinfo_response.json()["id"]
-            type = userinfo_response.json()["type"]
             email = userinfo_response.json()["email"]
             avatar = userinfo_response.json()["avatar_url"]
         else:
             return "User email not available or not verified by Github.", 400
-        user = User(unique_id,login, email, avatar,type)
+        user = User(unique_id,login, email, avatar)
         if login_user(user):
             users[str(unique_id)] = user
             return redirect(url_for("index_get"))
