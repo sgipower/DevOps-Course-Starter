@@ -1,8 +1,12 @@
 from todo_app.data.itemstatus import ItemStatus
 
 class ViewModel:
-    def __init__(self, items):
+    def __init__(self, items,user_):
         self._items = items
+        self.userID = user_.id
+        self.userName = user_.name
+        self.avatar = user_.profile_pic
+        self.userIsWriter = user_.isWriter()
     @property
     def has_todo_items(self):
         res = next((item for item in self._items if item.status == ItemStatus.TODO), None)
