@@ -1,3 +1,4 @@
+from todo_app.Auth.user import User
 from todo_app.data import itemstatus
 from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
@@ -7,7 +8,7 @@ def test_CheckTodoList():
     items = []
     items.append(Item(1,ItemStatus.TODO))
 
-    view = ViewModel(items)
+    view = ViewModel(items,User())
 
     assert  len(view.todo_items) == 1 
     assert  len(view.finished_items) == 0
@@ -20,7 +21,7 @@ def test_CheckDoingList():
     items = []
     items.append(Item(1,ItemStatus.DOING))
 
-    view = ViewModel(items)
+    view = ViewModel(items,User())
 
     assert  len(view.todo_items) == 0 
     assert  len(view.finished_items) == 0
@@ -33,7 +34,7 @@ def test_CheckDoneList():
     items = []
     items.append(Item(1,ItemStatus.FINISHED))
 
-    view = ViewModel(items)
+    view = ViewModel(items,User())
 
     assert  len(view.todo_items) == 0
     assert  len(view.finished_items) == 1
@@ -44,7 +45,7 @@ def test_CheckDoneList():
 
 def test_NoItems():
     items = []
-    view = ViewModel(items)
+    view = ViewModel(items,User())
 
     assert  len(view.todo_items) == 0
     assert  len(view.finished_items) == 0
