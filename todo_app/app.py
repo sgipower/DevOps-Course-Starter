@@ -21,6 +21,7 @@ def del_DB(db):
 def create_app(db = None):
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
+    app.config['LOGIN_DISABLED'] = os.getenv('LOGIN_DISABLED')
 
     if db == None:
         db = get_DB()
@@ -87,7 +88,11 @@ def create_app(db = None):
     @login_required
     def index_get():
         items =  session_items.get_items(db)
-        item_view_model = ViewModel(items,users[str(current_user.get_id())])
+        if current_user.get_id() is None:
+            item_view_model = ViewModel(items,User())
+        else: 
+            item_view_model = ViewModel(items,users[str(current_user.get_id())])
+        
         return render_template('index.html',view_model=item_view_model)
 
     @app.route('/delete', methods=["POST"])
