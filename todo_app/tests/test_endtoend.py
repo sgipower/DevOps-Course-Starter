@@ -53,13 +53,13 @@ def driver():
     opts.add_argument('--headless')
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
-    
     if os.environ.get('OS','') == 'Windows_NT':
         with webdriver.Chrome() as driver:
             yield driver
     else:
         with webdriver.Chrome('./chromedriver', options=opts) as driver:
             yield driver   
+
 
 def test_task_journey(driver, app_with_temp_board):
     driver.get('http://localhost:5000/')
