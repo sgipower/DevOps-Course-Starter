@@ -8,7 +8,7 @@ from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
 from oauthlib.oauth2 import WebApplicationClient
 from flask_login import login_required,LoginManager,login_user,current_user
-users = {}
+users = {'None':User()}
 def get_DB():
     client = pymongo.MongoClient(f"mongodb+srv://{os.getenv('MONGO_USERNAME')}:{os.getenv('MONGO_PASS')}@{os.getenv('MONGO_HOST')}/?w=majority")
     db = client[os.getenv('DEFAULT_DATABASE')]
@@ -87,17 +87,13 @@ def create_app(db = None):
     @login_required
     def index_get():
         items =  session_items.get_items(db)
-        if current_user.get_id() is None:
-            item_view_model = ViewModel(items,User())
-        else: 
-            item_view_model = ViewModel(items,users[str(current_user.get_id())])
-        
+        item_view_model = ViewModel(items,users[str(current_user.get_id())])
         return render_template('index.html',view_model=item_view_model)
 
     @app.route('/delete', methods=["POST"])
     @login_required
     def delete_item():
-        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+        if users[str(current_user.get_id())].isWriter():
             val = request.form.get("deletebutton")
             session_items.delete_item(db,val)
             return redirect(url_for('index_get'))
@@ -105,7 +101,7 @@ def create_app(db = None):
     @app.route('/reset', methods=["POST"])
     @login_required
     def reset_item():
-        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+        if users[str(current_user.get_id())].isWriter():
             val = request.form.get("Reset")
             session_items.change_status_item(db,val,ItemStatus.TODO)
             return redirect(url_for('index_get'))
@@ -113,7 +109,7 @@ def create_app(db = None):
     @app.route('/complete', methods=["POST"])
     @login_required
     def complete_item():
-        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+        if users[str(current_user.get_id())].isWriter():
             val = request.form.get("Complete")
             session_items.change_status_item(db,val,ItemStatus.FINISHED)
             return redirect(url_for('index_get'))
@@ -121,7 +117,7 @@ def create_app(db = None):
     @app.route('/doing', methods=["POST"])
     @login_required
     def doing_item():
-        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+        if users[str(current_user.get_id())].isWriter():
             val = request.form.get("Doing")
             session_items.change_status_item(db,val,ItemStatus.DOING)
             return redirect(url_for('index_get'))
@@ -129,7 +125,7 @@ def create_app(db = None):
     @app.route('/additem', methods=["POST"])
     @login_required
     def add_item():
-        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+        if users[str(current_user.get_id())].isWriter():
             val = request.form.get("data")
             session_items.add_item(db,val)
             return redirect(url_for('index_get'))

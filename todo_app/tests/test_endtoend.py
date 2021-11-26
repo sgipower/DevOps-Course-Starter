@@ -54,6 +54,7 @@ def driver():
     opts.add_argument('--no-sandbox')
     opts.add_argument('--disable-dev-shm-usage')
     with webdriver.Chrome('./chromedriver', options=opts) as driver:
+    #Uncomment the following line if this needs to be tested in a windows desktop.
     #with webdriver.Chrome() as driver:
         yield driver
 
