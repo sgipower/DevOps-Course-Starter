@@ -61,8 +61,7 @@ def create_app(db = None):
         token_response = requests.post(
             token_url,
             headers=headers,
-            data=body,
-            auth=(os.getenv('GITHUB_CLIENTID'), os.getenv('GITHUB_CLIENTSECRET'))
+            data=body
         )
         # Parse the tokens!
         client.parse_request_body_response(token_response.content.decode())
@@ -81,7 +80,8 @@ def create_app(db = None):
         user = User(unique_id,login, email, avatar)
         if login_user(user):
             users[str(unique_id)] = user
-            return redirect(url_for("index_get"))
+        #Redirection to main page, if user did not authenticated well, it will be redirected again to github.
+        return redirect(url_for("index_get"))
 
     @app.route('/')
     @login_required
@@ -97,37 +97,42 @@ def create_app(db = None):
     @app.route('/delete', methods=["POST"])
     @login_required
     def delete_item():
-        val = request.form.get("deletebutton")
-        session_items.delete_item(db,val)
-        return redirect(url_for('index_get'))
+        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+            val = request.form.get("deletebutton")
+            session_items.delete_item(db,val)
+            return redirect(url_for('index_get'))
 
     @app.route('/reset', methods=["POST"])
     @login_required
     def reset_item():
-        val = request.form.get("Reset")
-        session_items.change_status_item(db,val,ItemStatus.TODO)
-        return redirect(url_for('index_get'))
+        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+            val = request.form.get("Reset")
+            session_items.change_status_item(db,val,ItemStatus.TODO)
+            return redirect(url_for('index_get'))
 
     @app.route('/complete', methods=["POST"])
     @login_required
     def complete_item():
-        val = request.form.get("Complete")
-        session_items.change_status_item(db,val,ItemStatus.FINISHED)
-        return redirect(url_for('index_get'))
+        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+            val = request.form.get("Complete")
+            session_items.change_status_item(db,val,ItemStatus.FINISHED)
+            return redirect(url_for('index_get'))
 
     @app.route('/doing', methods=["POST"])
     @login_required
     def doing_item():
-        val = request.form.get("Doing")
-        session_items.change_status_item(db,val,ItemStatus.DOING)
-        return redirect(url_for('index_get'))
+        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+            val = request.form.get("Doing")
+            session_items.change_status_item(db,val,ItemStatus.DOING)
+            return redirect(url_for('index_get'))
 
     @app.route('/additem', methods=["POST"])
     @login_required
     def add_item():
-        val = request.form.get("data")
-        session_items.add_item(db,val)
-        return redirect(url_for('index_get'))
+        if current_user.get_id() is not None and users[str(current_user.get_id())].isWriter() == True:
+            val = request.form.get("data")
+            session_items.add_item(db,val)
+            return redirect(url_for('index_get'))
     return app
 
 if __name__ == '__main__':
