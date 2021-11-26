@@ -51,17 +51,6 @@ You should see output similar to the following:
 ```
 Now visit [`http://localhost:5000/`](http://localhost:5000/) in your web browser to view the app.
 
-## Configuring the Trello API
-
-Before you run the application for the first time, you will need to register on Trello and obtain a key and token.
-You will add the key and token to your newly created .env file :
-```bash
-SECRET_KEY=secret-key
-TRELLO_KEY=*************
-TRELLO_TOKEN=**********
-TRELLO_BOARD=47ebaa0e00564b548464a9d5fb7c796f
-```
-
 ## testing this app
 
 Before you test this app you need to get your environment ready. To do that install pytest:
@@ -114,4 +103,16 @@ MONGO_USERNAME=*******
 MONGO_PASS=******
 MONGO_HOST=YOURHOST.mongodb.net
 DEFAULT_DATABASE=db
+```
+
+## GitHub OAuth
+This project is now fully integrated with GitHub OAuth, please set the variables in  your .env 
+```bash
+GITHUB_CLIENTID=
+GITHUB_CLIENTSECRET=
+OAUTHLIB_INSECURE_TRANSPORT=true
+```
+And you will need to add the userID that will have writer access in the file Auth\userpy:
+```bash
+writers = [24620559,...]
 ```

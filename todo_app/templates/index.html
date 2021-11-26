@@ -4,7 +4,8 @@
 {% block content %}
   <div class="jumbotron">
     <h1 class="display-4">To-Do App</h1>
-    <p class="lead">Just another to-do app.</p>
+    Welcome {{view_model.userName}} ({{view_model.userID}})
+    <img src="{{view_model.avatar}}" width="50px" height="50px">
   </div>
   {% if view_model.has_todo_items %}
   <div class="row">
@@ -15,12 +16,14 @@
         {% for item in view_model.todo_items%}
         <li>
           <div  id="todo-task">
-            <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
-              Delete
-            </button> 
-            <button type="submit" name="Doing" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('doing_item')}}';">
-              To Doing
-            </button> 
+            {% if view_model.userIsWriter %}
+              <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+                Delete
+              </button> 
+              <button type="submit" name="Doing" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('doing_item')}}';">
+                To Doing
+              </button> 
+            {% endif %}
             {{item.id}} - {{item.status.name}} - {{item.title}}  
           </div>
         </li>
@@ -38,15 +41,17 @@
         <form method="post">
         {% for item in view_model.doing_items%}
         <li>
-          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
-            Delete
-          </button> 
-          <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
-            Complete
-          </button> 
-          <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
-            Reset
-          </button> 
+          {% if view_model.userIsWriter %}
+            <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+              Delete
+            </button> 
+            <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
+              Complete
+            </button> 
+            <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
+              Reset
+            </button> 
+          {% endif %}
           {{item.id}} - {{item.status.name}} - {{item.title}}  
         </li>
         {% endfor %}
@@ -63,17 +68,19 @@
         <form method="post">
         {% for item in view_model.finished_items%}
         <li>
-          <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
-            Delete
-          </button> 
-          {% if item.unstarted() %}
-          <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
-            Complete
-          </button> 
-          {% else %}
-          <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
-            Reset
-          </button> 
+          {% if view_model.userIsWriter %}
+            <button type="submit" name="deletebutton" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('delete_item')}}';">
+              Delete
+            </button> 
+            {% if item.unstarted() %}
+            <button type="submit" name="Complete" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('complete_item')}}';">
+              Complete
+            </button> 
+            {% else %}
+            <button type="submit" name="Reset" value="{{item.cardid}}" onclick="javascript: form.action='{{ url_for('reset_item')}}';">
+              Reset
+            </button> 
+            {% endif %}
           {% endif %}
           {{item.id}} - {{item.status.name}} - {{item.title}}  
         </li>
@@ -83,6 +90,7 @@
     </div>
   </div>
   {% endif %}
+  {% if view_model.userIsWriter %}
   <div class="row">
     <div class="col-md-12">
       <h2>Add Item</h2>
@@ -93,5 +101,6 @@
       </form>
 
     </div>
+  {% endif %}
   </div>
 {% endblock %}

@@ -9,7 +9,7 @@ before-install:
   
 script:
   - docker build --target test -t test .
-  - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' -e MONGO_USERNAME -e MONGO_PASS  -e MONGO_HOST -e DEFAULT_DATABASE test
+  - docker run -e TRELLO_KEY  -e TRELLO_TOKEN -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' -e MONGO_USERNAME -e MONGO_PASS  -e MONGO_HOST -e DEFAULT_DATABASE -e LOGIN_DISABLED="True" test
  
 after_success:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
@@ -19,7 +19,7 @@ after_success:
 deploy:
     provider: script
     on:
-        branch: main
+        all_branches: true
     script: 
         docker push registry.heroku.com/todo-app-m8/web;
         heroku container:release web --app todo-app-m8;

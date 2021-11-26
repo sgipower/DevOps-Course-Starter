@@ -7,6 +7,7 @@ from todo_app.data.item import Item
 import pytest
 from dotenv import load_dotenv, find_dotenv
 import mongomock
+import os
 
 from unittest.mock import patch, Mock
 import todo_app.app
@@ -16,6 +17,7 @@ def client():
  # Use our test integration config instead of the 'real' version
     file_path = find_dotenv('.env.test')
     load_dotenv(file_path, override=True)
+    os.environ['LOGIN_DISABLED'] = 'True'
  # Create the new app.
     collection = mongomock.MongoClient().db.collection
     test_app = todo_app.app.create_app(collection)
