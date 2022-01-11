@@ -55,7 +55,6 @@ def create_app(db = None):
         token_url, headers, body = client.prepare_token_request(
             token_endpoint,
             authorization_response=request.url,
-            redirect_url=request.base_url,
             client_secret=os.getenv('GITHUB_CLIENTSECRET')
         )
         token_response = requests.post(
