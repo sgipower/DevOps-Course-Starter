@@ -10,8 +10,8 @@ from oauthlib.oauth2 import WebApplicationClient
 from flask_login import login_required,LoginManager,login_user,current_user
 users = {'None':User()}
 def get_DB():
-    client = pymongo.MongoClient(f"mongodb+srv://{os.getenv('MONGO_USERNAME')}:{os.getenv('MONGO_PASS')}@{os.getenv('MONGO_HOST')}/?w=majority")
-    db = client[os.getenv('DEFAULT_DATABASE')]
+    client = pymongo.MongoClient(f"{os.getenv('MONGO_CONNECTION_STRING')}")
+    db = client["db"]
     col = os.getenv('TRELLO_BOARD')
     return db[col]
     
