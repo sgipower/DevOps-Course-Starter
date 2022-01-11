@@ -35,7 +35,7 @@ def app_with_temp_board():
     os.environ['LOGIN_DISABLED'] = 'True'
     db = get_board()
     # construct the new application
-    application = todo_app.app.create_app()
+    application = todo_app.app.create_app(db)
     #application.boardId = board_id
     # start the app in its own thread.
     thread = Thread(target=lambda: application.run(use_reloader=False))
