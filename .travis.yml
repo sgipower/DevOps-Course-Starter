@@ -13,14 +13,11 @@ script:
  
 after_success:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
-  - docker tag $DOCKER_USERNAME/todo-app:latest registry.heroku.com/todo-app-m8/web
   - docker push $DOCKER_USERNAME/todo-app:latest
-  - curl -dH -X POST "https://\$capita2-jorgeferrer-webapp:f7zzpw4hFAtWsnwzvitdYdcesWLD0JMNQZSZYPrlk19qSxRLHj7GRv6ivPHq@capita2-jorgeferrer-webapp.scm.azurewebsites.net/docker/hook"
   
 deploy:
     provider: script
     on:
         all_branches: true
     script: 
-        docker push registry.heroku.com/todo-app-m8/web;
-        heroku container:release web --app todo-app-m8;
+        curl -dH -X POST "$WEBHOOK_URL"
