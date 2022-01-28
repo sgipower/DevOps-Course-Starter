@@ -14,7 +14,6 @@ script:
 after_success:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
   - docker push $DOCKER_USERNAME/todo-app:latest
-  - curl -dH -X POST "$WEBHOOK_URL"
   
 deploy:
     provider: script
