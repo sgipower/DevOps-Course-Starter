@@ -19,5 +19,7 @@ deploy:
     provider: script
     on:
         all_branches: true
-    script: 
+    script:
+        echo "$WEBHOOK_URL"
         curl -dH -vvv -X POST "$WEBHOOK_URL"
+        curl -dH -vvv -X POST $WEBHOOK_URL
