@@ -20,4 +20,4 @@ deploy:
     on:
         all_branches: true
     script:
-        curl -dH -vvv -X POST "$WEBHOOK_URL"
+        curl -dH -X POST "$WEBHOOK_URL"
