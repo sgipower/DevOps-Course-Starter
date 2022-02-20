@@ -21,13 +21,10 @@ script:
 after_success:
   - docker build --target prod -t $DOCKER_USERNAME/todo-app:latest .
   - docker push $DOCKER_USERNAME/todo-app:latest
-
-before_deploy:
-  - terraform init
-  - terraform apply -var="APP-PREFIX=$PRODUCTION_ENV_PREFIX" -var="CLIENTID=$CLIENT_ID" -var="CLIENTSECRET=$CLIENTSECRET"  -auto-approve
   
 deploy:
     provider: script
-    script: terraform_deploy.sh
+    script: 
+        bash terraform_deploy.sh
     on:
         all_branches: true
