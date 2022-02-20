@@ -28,7 +28,6 @@ before_deploy:
   
 deploy:
     provider: script
+    script: terraform_deploy.sh
     on:
         all_branches: true
-    script:
-        - curl -dH -X POST "$(terraform output -raw cd_webhook)"
