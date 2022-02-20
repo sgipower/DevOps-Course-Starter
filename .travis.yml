@@ -11,6 +11,7 @@ install:
   - unzip terraform_"$TF_VERSION"_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$TF_VERSION"_linux_amd64.zip
+  - curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
   - terraform init
 
 script:
