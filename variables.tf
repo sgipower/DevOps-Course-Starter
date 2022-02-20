@@ -1,5 +1,6 @@
 variable "APP-PREFIX" {
     type        = string
+    sensitive   = false
 }
 variable "location" {
     description = "The Azure location where all resources in this deployment should be created"
