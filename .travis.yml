@@ -31,4 +31,4 @@ deploy:
     on:
         all_branches: true
     script:
-        curl -dH -X POST "$(terraform output -raw cd_webhook)"
+        - curl -dH -X POST "$(terraform output -raw cd_webhook)"
