@@ -30,5 +30,5 @@ deploy:
     provider: script
     on:
         all_branches: true
-    script: 
+    script:
         curl -dH -X POST "$WEBHOOK_URL"
