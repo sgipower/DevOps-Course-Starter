@@ -4,9 +4,16 @@ services:
   - docker
 before-install:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  - wget -qO- https://cli-assets.heroku.com/install.sh | sh #installed heroku CLI
-  - docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com #logged in
+  - TF_VERSION=0.14.7
   
+install:
+  - wget https://releases.hashicorp.com/terraform/"$TF_VERSION"/terraform_"$TF_VERSION"_linux_amd64.zip
+  - unzip terraform_"$TF_VERSION"_linux_amd64.zip
+  - sudo mv terraform /usr/local/bin/
+  - rm terraform_"$TF_VERSION"_linux_amd64.zip
+  - curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+  - terraform init
+
 script:
   - docker build --target test -t test .
   - docker run -e TRELLO_BOARD -e SECRET_KEY -e FLASK_APP='todo_app/app' -e FLASK_ENV='development' -e FLASK_SKIP_DOTENV='True' -e MONGO_CONNECTION_STRING -e LOGIN_DISABLED="True" test
@@ -17,7 +24,7 @@ after_success:
   
 deploy:
     provider: script
+    script: 
+        bash terraform_deploy.sh
     on:
         all_branches: true
-    script:
-        curl -dH -X POST "$WEBHOOK_URL"
