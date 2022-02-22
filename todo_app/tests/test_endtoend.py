@@ -17,8 +17,8 @@ load_dotenv()
 
 
 def get_board():
-    client = pymongo.MongoClient(f"mongodb+srv://{os.getenv('MONGO_USERNAME')}:{os.getenv('MONGO_PASS')}@{os.getenv('MONGO_HOST')}/?w=majority")
-    db = client[os.getenv('DEFAULT_DATABASE')]
+    client = pymongo.MongoClient(f"{os.getenv('MONGO_CONNECTION_STRING')}")
+    db = client["db"]
     os.environ['TRELLO_BOARD'] = "test_board" + uuid.uuid1().hex
     col = os.environ['TRELLO_BOARD']
     return db[col]

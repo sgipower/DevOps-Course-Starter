@@ -97,12 +97,11 @@ For that you will need to add the keys in the build settings. For more info chec
 
 
 ## MongoDB
-This project is now fully integrated with MongoDB atlas. For it to work, please set the variables in  your .env 
+This project is now fully integrated with MongoDB. For it to work, please set the variables in  your .env , as well as trello_board id and secret-key.
 ```bash
-MONGO_USERNAME=*******
-MONGO_PASS=******
-MONGO_HOST=YOURHOST.mongodb.net
-DEFAULT_DATABASE=db
+MONGO_CONNECTION_STRING=
+TRELLO_BOARD=
+SECRET_KEY=
 ```
 
 ## GitHub OAuth
