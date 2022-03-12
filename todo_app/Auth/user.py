@@ -1,5 +1,4 @@
 from flask_login import UserMixin
-
 writers = [24620559,0]
 
 class User(UserMixin):

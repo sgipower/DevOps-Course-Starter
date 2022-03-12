@@ -15,3 +15,7 @@ variable "CLIENTSECRET" {
     type        = string
     sensitive   = true
 }
+variable "loglevel" {
+    description = "level for the logs."
+    default = "ERROR"
+}
