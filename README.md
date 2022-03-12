@@ -125,3 +125,14 @@ You can connect your logs to Loogly, request a token at Loggly.com and add the t
 ```bash
 LOGGLY_TOKEN=<your token here>
 ```
+## Kubectl
+To run this app on k8s you will have to create the secrets. The easiest way is:
+```bash
+kubectl create secret generic myapp-secrets --from-literal=SECRET_KEY=<secret> --from-literal=GITHUB_CLIENTSECRET=<secret> --from-literal=LOGGLY_TOKEN=<secret>--from-literal=GITHUB_CLIENTID=<secret> --from-literal=MONGO_CONNECTION_STRING=<connection>
+```
+Don't forget to forward the port:
+```bash
+kubectl port-forward service/module-14 7080:80
+```
+And now you can access you app on: http://127.0.0.1:7080/
+

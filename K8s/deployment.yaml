@@ -1,0 +1,60 @@
+# deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: module-14
+spec:
+ selector:
+  matchLabels:
+    app: module-14
+ replicas: 1
+ template:
+  metadata:
+    labels:
+      app: module-14
+  spec:
+    containers:
+    - name: todo-app
+      image: todo-app:prod
+      imagePullPolicy: Never
+      ports:
+      - containerPort: 80
+      env:
+      - name: FLASK_APP
+        value: "todo_app/app"
+      - name: FLASK_ENV
+        value: "development"
+      - name: MONGO_CONNECTION_STRING
+        valueFrom:
+          secretKeyRef:
+            name: myapp-secrets
+            key: MONGO_CONNECTION_STRING
+      - name: TRELLO_BOARD
+        value: "60eacfe12a6b3c534957c408"
+      - name: SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: myapp-secrets
+            key: SECRET_KEY
+      - name: GITHUB_CLIENTID
+        valueFrom:
+          secretKeyRef:
+            name: myapp-secrets
+            key: GITHUB_CLIENTID
+      - name: GITHUB_CLIENTSECRET
+        valueFrom:
+          secretKeyRef:
+            name: myapp-secrets
+            key: GITHUB_CLIENTSECRET
+      - name: OAUTHLIB_INSECURE_TRANSPORT
+        value: "true"
+      - name: LOG_LEVEL
+        value: "INFO"
+      - name: LOGGLY_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: myapp-secrets
+            key: LOGGLY_TOKEN
+      - name: PORT
+        value: "80"
+
