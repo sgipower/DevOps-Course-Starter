@@ -115,3 +115,13 @@ And you will need to add the userID that will have writer access in the file Aut
 ```bash
 writers = [24620559,...]
 ```
+## Logs and Loggly
+You can set up the application to send the logs to Loggly.
+First you will need to use the variable LOG_LEVEL to set up the level you want. EG:
+```bash
+LOG_LEVEL=INFO
+```
+You can connect your logs to Loogly, request a token at Loggly.com and add the token to the variable LOGGLY_TOKEN
+```bash
+LOGGLY_TOKEN=<your token here>
+```
