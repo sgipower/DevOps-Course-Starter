@@ -49,6 +49,7 @@ app_settings = {
     "PORT" = "8080"
     "SECRET_KEY" = "secret-key"
     "TRELLO_BOARD" = "60eacfe12a6b3c534957c408"
+    "LOG_LEVEL" = var.loglevel
     }
 }
 
