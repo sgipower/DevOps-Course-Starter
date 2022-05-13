@@ -1,4 +1,4 @@
-FROM python:3.8.6-buster as base
+FROM python:3.8.13-buster as base
 
 ARG YOUR_ENV
 
