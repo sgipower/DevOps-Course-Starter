@@ -9,8 +9,6 @@ from todo_app.data.itemstatus import ItemStatus
 from todo_app.model.viewModel import ViewModel
 from oauthlib.oauth2 import WebApplicationClient
 from flask_login import login_required,LoginManager,login_user,current_user
-from loggly.handlers import HTTPSHandler
-from logging import Formatter
 users = {'None':User()}
 
 def get_DB():
@@ -26,23 +24,15 @@ def create_app(db = None):
     app = Flask(__name__)
     app.config.from_object('todo_app.flask_config.Config')
     app.config['LOGIN_DISABLED'] = os.getenv('LOGIN_DISABLED')
-    app.config['LOGGLY_TOKEN'] = os.getenv('LOGGLY_TOKEN')
-    #logging.basicConfig(level = os.getenv('LOG_LEVEL')) 
-    app.config['LOG_LEVEL'] = os.getenv('LOG_LEVEL') 
+    logging.basicConfig(level = os.getenv('LOG_LEVEL')) 
     mylog = logging.getLogger('todoapp')
-    mylog.setLevel(app.config['LOG_LEVEL'])
-    #setting up Loggly
-    if app.config['LOGGLY_TOKEN'] is not None:
-        handler = HTTPSHandler(f'https://logs-01.loggly.com/inputs/{app.config["LOGGLY_TOKEN"]}/tag/todo')
-        handler.setFormatter(Formatter("[%(asctime)s] %(levelname)s in %(module)s: %(message)s"))
-        mylog.addHandler(handler)
     
     if db == None:
         db = get_DB()
 
     #login manager
     login_manager = LoginManager()
-    mylog.debug('Creating WebClient')
+    mylog.info('Creating WebClient')
     client = WebApplicationClient(os.getenv('GITHUB_CLIENTID'))
 
     @login_manager.unauthorized_handler
