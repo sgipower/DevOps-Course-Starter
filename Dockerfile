@@ -1,4 +1,4 @@
-FROM python:3.9.13-slim as base
+FROM python:3.9-buster as base
 
 ARG YOUR_ENV
 
